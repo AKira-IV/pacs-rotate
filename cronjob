@@ -1,0 +1,2 @@
+# Ejecutar cada lunes a las 3:00 AM
+0 3 * * 1 /usr/local/bin/python3 /app/rotate_studies_http_v4.py --days 180 >> /app/log_migracion.csv 2>&1
