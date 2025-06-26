@@ -30,3 +30,45 @@ pacs-rotate/
 └── resumen_csv.sh # Script en Bash para analizar el log
 ```
 ---
+## 🐳 Cómo usar con Docker
+
+🔨 Construir la imagen
+
+```
+docker build -t pacs-rotate .
+
+Ejecutar el contenedor con:
+
+docker run -d \
+  --name pacs-rotate \
+  -v /ruta/logs:/app/logs \
+  pacs-rotate
+
+```
+## 📊 Analizar estadísticas con Bash
+
+```
+chmod +x resumen_csv.sh
+./resumen_csv.sh
+```
+Ejemplo de salida:
+```
+🗂 Total de estudios procesados: 1320
+📦 Estudios transferidos        : 284
+✅ Verificados y eliminados     : 1023
+⚠️  Backup incompleto            : 13
+
+📅 Estadísticas por fecha:
+📆 2025-06-25 - 220 estudios
+📆 2025-06-18 - 180 estudios
+
+```
+
+## Cron por defecto para implementar 
+
+```
+0 3 * * 1 /usr/local/bin/python3 /app/rotate_studies_http_v4.py --days 180 >> /app/log_migracion.csv 2>&1
+```
+ 
+
+
