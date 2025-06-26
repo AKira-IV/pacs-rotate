@@ -18,6 +18,7 @@ Sistema automático para migrar estudios DICOM antiguos desde un servidor **Orth
 
 ## 🏗️ Estructura del proyecto
 
+```
 pacs-rotate/
 ├── rotate_studies_http_v4.py # Script principal
 ├── requirements.txt # Dependencias Python
@@ -27,3 +28,5 @@ pacs-rotate/
 ├── entrypoint.sh # Inicializador
 ├── log_migracion.csv # (Se genera automáticamente)
 └── resumen_csv.sh # Script en Bash para analizar el log
+```
+---
