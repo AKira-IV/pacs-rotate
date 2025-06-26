@@ -2,6 +2,7 @@ import os
 import csv
 import argparse
 import requests
+import tempfile
 from datetime import datetime, timedelta
 from requests.auth import HTTPBasicAuth
 from dotenv import load_dotenv
@@ -37,13 +38,24 @@ def obtener_estudio_por_uid(base_url, study_uid):
 
 def exportar_y_subir(study_id):
     print(f"📦 Exportando estudio {study_id} desde MAIN...")
-    r = requests.get(f"{MAIN_URL}/studies/{study_id}/archive", auth=auth, stream=True)
-    r.raise_for_status()
-    print("⬆️ Subiendo ZIP al BACKUP...")
-    upload = requests.post(f"{BACKUP_URL}/tools/upload", data=r.raw, auth=auth)
-    upload.raise_for_status()
-    print("✅ Transferencia completada.\n")
 
+    url_export = f"{MAIN_URL}/studies/{study_id}/archive"
+    r = requests.get(url_export, stream=True, auth=auth)
+    r.raise_for_status()
+
+    with tempfile.NamedTemporaryFile(suffix=".zip", delete=False) as tmp:
+        for chunk in r.iter_content(chunk_size=8192):
+            tmp.write(chunk)
+        tmp_path = tmp.name
+
+    print(f"⬆️ Subiendo ZIP al BACKUP desde {tmp_path}...")
+
+    with open(tmp_path, 'rb') as f:
+        files = {'file': (f"{study_id}.zip", f, 'application/zip')}
+        upload = requests.post(f"{BACKUP_URL}/tools/upload", files=files, auth=auth)
+        upload.raise_for_status()
+        print("✅ Transferencia completada.\n")
+        
 def eliminar_estudio_main(study_id):
     r = requests.delete(f"{MAIN_URL}/studies/{study_id}?resources=true", auth=auth)
     return r.ok
