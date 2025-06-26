@@ -27,5 +27,3 @@ pacs-rotate/
 ├── entrypoint.sh # Inicializador
 ├── log_migracion.csv # (Se genera automáticamente)
 └── resumen_csv.sh # Script en Bash para analizar el log
-
----
